@@ -1,0 +1,54 @@
+#!/bin/bash
+chmod 755 script-file-name (vim3a.sh)
+./script-file-name
+
+Accesing variables:
+$name
+${name}
+
+echo - print
+
+if logic expression
+then
+    command set 1
+else
+    command set 2
+fi
+
+for variable name in list
+do
+    command set
+done
+
+while logic expression
+do
+    command set
+done
+
+Iterating through the lines of a file.
+
+while read line
+do
+    echo $line
+done<file name
+
+Iterating through the words of a file.
+
+for word in $(cat file name)
+do
+    echo $word
+done
+Iterating through the lines of the output of a command.
+
+command | while read -r line
+do
+    echo $line
+done
+
+Iterating through the words of the output of a command.
+
+for word in $(command)
+do
+    echo $word
+done
+

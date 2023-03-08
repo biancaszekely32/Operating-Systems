@@ -1,0 +1,9 @@
+
+Write 2 c programs, A and B. A will read from the keyboard a filename and
+send all the digits from the file via fifo. B will create 2 prcesses p1 and
+p2. p1 will read the digits from the previously mentioned fifo and will
+calculate the sum of the set digits and send it to p2 via pipe. p2 will
+display the sum on the standard output (the console).
+The fifo file must be created within the programs.
+The source file must be compiled using gcc with -Wall -g options WITHOUT WARNINGS OR SYNTAX ERRORS!!!
+Memory leacks and zombie processes are not allowed.

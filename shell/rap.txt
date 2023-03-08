@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ -z $1 ]
+then
+    echo "not enough parameters"
+    exit 1
+fi
+for dir in $@
+do
+    if [ ! -d $dir ]
+    then
+        echo "parameter is not a directory"
+    else
+       # echo " ` pwd ` /$dir"
+        u=` ls -l ${dir} | awk '{print $3}'| uniq `
+        echo $u
+        full=` cat /etc/passwd | grep  "$u"| awk -F ":" '{print $5}' `
+       echo $full
+    fi
+done
+~

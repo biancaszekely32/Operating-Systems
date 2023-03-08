@@ -1,0 +1,214 @@
+-check if valid username
+echo $val | grep -E -q "^[a-z]{4}[0-9]{4}$"
+val="$?"
+$ ls | wc -l # list files in a dir
+$ find <directory> -type f | wc -l
+$ `tree -a /home/user` # hidden files
+homedir =`cat $user | awk -F ":" '{print $(NF-1)}'`
+find files == find $homedir -type f
+/////////////////////////////
+hidden files
+
+
+#!/bin/bash
+if [[ $# -eq 0 ]]; then
+        echo "please provide some arg"
+        exit 1
+fi
+
+if [ $# -lt 2 ]
+then
+        echo "Invalid number of parameters!"
+        exit 1
+fi
+
+re='^[a-z]{4}[0-9]{4}$'
+user=$1
+if [[ ! $user =~ $re ]]; then
+        echo "Invalid user!"
+        exit 1
+fi
+
+shift 1
+
+for dir in $@
+do
+        if [[ ! -d $dir ]]; then
+                echo "Invalid directory!"
+                exit 1
+        fi
+done
+
+data=`cat /etc/passwd | grep -E "^${user}"`
+name=`echo "$data" | awk -F ":" '{print $5}'`
+echo $name
+
+for dir in $@
+do
+        k=`ls -la "$dir" | awk -F " " '{print $NF}' | grep -E "^\." | wc -l`
+        echo $k
+done
+
+/////////////////////////////
+list of strings with home dir and sum and fullname
+
+
+#!/bin/bash
+
+if [[ $# -eq 0 ]]; then
+        echo "please provide some arg"
+        exit 1
+fi
+
+is_user='^[a-z]{4}[0-9]{4}$'
+is_digit='^[0-9]+$'
+sum=0
+
+for arg in $@
+do
+        x=$arg
+        if [[ $x =~ $is_user ]]; then
+                data=`cat '/etc/passwd' | grep -E "^${x}" | awk -F ":" '{print $5,$6}'`
+                echo $data
+
+        elif [[ $x =~ $is_digit ]];then
+                sum=$((sum+x))
+        else
+                echo "Invalid param!"
+                exit 1
+        fi
+done
+
+echo the sum is: $sum
+
+////////////////////////
+all the files from dir
+
+#!/bin/bash
+
+if [[ $# -eq 0 ]]; then
+        echo "Please provide some arguments"
+        exit 1
+fi
+
+if [[ $# -lt 2 ]]; then
+        echo "You must provide one local username and at least one directory!"
+        exit 1
+fi
+
+user=$1
+username=$1
+echo $username | grep -E -q "^[a-z]{4}[0-9]{4}$"
+username="$?"
+
+if [ $username -eq 1 ]; then
+        echo "Invalid username"
+        exit 1
+fi
+
+shift 1
+
+for dir in  $@
+do
+        if [ ! -d $dir ]; then
+        echo "Invalid dir!"
+        exit 1
+        elif ls -l $dir | awk '{print $3}' | grep -E -q "${user}"; then
+                echo the files are:
+                for file in $(find $dir -type f)
+                        do
+                                echo  $file
+                        done
+
+        fi
+
+done
+
+//////////////////////
+#!/bin/bash
+
+if [[ $# -eq 0 ]]; then
+        echo "Please provide some arguments"
+        exit 1
+fi
+
+
+lines=0
+
+for arg in $@; do
+        if [ -d $arg ]; then
+	user=`ls -ld $arg | awk '{print $3}'`
+	#echo $user
+	full=`cat /etc/passwd | grep -E "^$user"`
+	
+	name=`echo ${full} | awk -F ":" '{print $5}'`
+        homedir=`echo ${full} | awk -F ":" '{print $6}'`
+        size=`du -sh`
+	echo $name
+        echo $homedir
+        echo $size
+	largest=`find "$arg" -type f | sort -nr | head -n 1`
+        echo "The largest file is: $largest"
+
+
+        elif [ -f $arg ]; then
+        lines=`tac $arg`
+        echo $lines
+        
+	else 
+		echo $arg is not a file,neither a directory.
+		exit 1
+	fi
+done
+
+
+
+
+
+
+
+
+/////////////////
+-fullnames,size of there homedir, 
+for user in "$@"
+do
+    data=$(cat '/etc/passwd' | grep -E "^${user}")
+    if [ ! -z "$data" ];then
+        !!homedir=$(echo "$data" | awk -F ':' '{print $(NF-1)}')
+        size=$(du -bs $homedir)
+
+        name=$(echo "$data" | awk -F ':' '{print $5}')
+        result="$result$size $name"$'\n'
+    else
+        echo $user >> $f1
+    fi
+done
+
+//////////////////////////
+- the appearences of w in a file
+while [[ $# -gt 0 ]]
+do
+
+	if test -f "$1"; then
+		word_count=$(cat $1 | grep -oi "$w" | wc -l)
+		echo Word $w appeared $word_count times in the $1 file.
+
+		even_numbers_count=$(cat $1 | grep -oi "[0-9]" | wc -l)
+		echo $even_numbers_count even numbers in the file $1.
+	
+	else
+		echo $1 is not a file.
+	fi	
+
+	shift
+done
+/////////////////////
+-nthline containtng the word w from each file.
+lines=$(cat "$file" | grep -E "${w}")
+    nthline=$(echo "$lines" | tail -n +"$n" | head -n 1)
+    
+    echo "$nthline"
+
+awk -F: -f prog.awk /etc/passwd
+sed -E "s/([aeiou])/\1\1/gi" /etc/passwd
+grep -E -v "/bash$" /etc/passwd

@@ -1,0 +1,62 @@
+
+Write a c program that receives files as command line arguments.
+For each argument the program will creat a thread, each thread will receive
+one of the files as an argument. Each thread will read its file character by
+character until one of the threads reaches the end of its file, at that
+moment all thre remaining threads will stop reading and display on the
+standard output the last character it read.
+The threads must be dynamically allocated in memory.
+The access to the critical resources must be efficiently synchronized (aka
+the wait time of each thread must be miminum)
+NOTE: When you compile use the -pthread obtion.
+The source file must be compiled using gcc with -Wall -g options WITHOUT WARNINGS OR SYNTAX ERRORS!!!
+
+ #include <stdio.h>
+  2 #include <stdlib.h>
+  3 #include <pthread.h>
+  4
+  5 typedef struct{
+  6 char* filename;
+  7 int idx;
+  8 }structu;
+  9
+ 10 int ok;
+ 11 pthread_mutex_t m;
+ 12
+ 13 void *f(void *pth)
+ 14 {
+ 15     structu s= (*(structu*)pth);
+ 16     char c;
+ 17     FILE* file= fopen(s.filename, "r");
+ 18     while(fscanf(file,"%c", &c)>0)
+ 19     {
+ 20     if(ok==1)break;
+ 21     }
+ 22     pthread_mutex_lock(&m);
+ 23     ok=1;
+ 24     printf("The thread %d has read the last character c: %c.\n",s.idx,c);
+ 25     pthread_mutex_unlock(&m);
+ 26     free(pth);
+ 27     fclose(file);
+ 28     return NULL;
+ 29 }
+ 30
+ 31 int main(int argc, char* argv[])
+ 32 {
+ 33      int i;
+ 34      pthread_t *thread=(pthread_t*)malloc((argc-1)*sizeof(pthread_t));
+ 35      pthread_mutex_init(&m,NULL);
+ 36      for(i=0; i<(argc-1); i++)
+ 37         {
+ 38
+ 39                 structu *s=(structu*)malloc(sizeof(structu));
+ 40                 s->idx=i;
+ 41                 s->filename = argv[i+1];
+ 42                 pthread_create(&thread[i],NULL,f,(void*)s);
+ 43         }
+ 44     for(i=0; i<(argc-1); i++)
+ 45         pthread_join(thread[i],NULL);
+ 46     pthread_mutex_destroy(&m);
+ 47     free(thread);
+ 48    return 0;
+	}
